@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vijaya Bhaskar Eswaran — World Models &amp; Reinforcement Learning</title>
+<meta name="description" content="Vijaya Bhaskar Eswaran — independent researcher working on world models and reinforcement learning. Open-source PyTorch reimplementation of DreamerV4.">
+<meta property="og:title" content="Vijaya Bhaskar Eswaran">
+<meta property="og:description" content="Independent researcher — world models &amp; reinforcement learning. Open-source PyTorch reimplementation of DreamerV4.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fcfcfb;
+    --ink:#1c2126;
+    --muted:#59626c;
+    --line:#e5e7e4;
+    --accent:#1f47c4;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12151a;
+      --ink:#e8eaec;
+      --muted:#9aa3ad;
+      --line:#272c33;
+      --accent:#84a0ff;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:17px}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.7;
+    padding:4.5rem 1.35rem 5rem;
+    -webkit-font-smoothing:antialiased;
+  }
+  main{max-width:42rem;margin:0 auto}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .12s ease}
+  a:hover{border-bottom-color:currentColor}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+  /* header */
+  h1{font-size:1.9rem;font-weight:600;letter-spacing:-0.015em;line-height:1.2}
+  .role{margin-top:.4rem;margin-bottom:1.25rem;font-size:1.05rem;color:var(--muted)}
+  .meta{font-family:var(--mono);font-size:.84rem;color:var(--muted)}
+  .meta a{color:var(--accent)}
+  .contact{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;margin-top:.45rem}
+
+  /* sections */
+  section{margin-top:3.4rem}
+  h2{
+    font-family:var(--mono);
+    font-size:.74rem;
+    font-weight:500;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:var(--muted);
+    border-bottom:1px solid var(--line);
+    padding-bottom:.55rem;
+    margin-bottom:1.25rem;
+  }
+  p + p{margin-top:.95rem}
+
+  /* work + experience rows */
+  .row{
+    display:grid;
+    grid-template-columns:8.5rem 1fr;
+    gap:.2rem 1.4rem;
+    padding:.8rem 0;
+  }
+  .row + .row{border-top:1px solid var(--line)}
+  .when{font-family:var(--mono);font-size:.84rem;color:var(--muted);padding-top:.2rem}
+  .what strong{font-weight:600}
+  .what .sub{color:var(--muted);font-size:.95rem;margin-top:.15rem}
+  @media (max-width:540px){
+    body{padding-top:3rem}
+    h1{font-size:1.6rem}
+    .row{grid-template-columns:1fr}
+    .when{padding-top:0}
+  }
+
+  footer{
+    margin-top:4.5rem;
+    padding-top:1.1rem;
+    border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <header>
+    <h1>Vijaya Bhaskar Eswaran</h1>
+    <p class="role">Independent researcher &middot; World models &amp; reinforcement learning</p>
+
+    <div class="meta contact">
+      <a href="mailto:vijayabhaskarev@outlook.com">vijayabhaskarev@outlook.com</a>
+    </div>
+    <div class="meta contact">
+      <a href="https://github.com/vijayabhaskar-ev">GitHub</a>
+      <a href="https://www.linkedin.com/in/vijaya-bhaskar-eswaran/">LinkedIn</a>
+      <a href="https://x.com/vijayabhaskarev">X</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>Research</h2>
+    <p>
+      I work on world models &mdash; neural networks that learn to simulate an environment well
+      enough for an agent to plan and learn inside them. My recent focus is an open-source
+      PyTorch reimplementation of
+      <a href="https://github.com/vijayabhaskar-ev/dreamer_v4">DreamerV4</a>: a masked-autoencoder
+      video tokenizer, a block-causal transformer dynamics model with flow-matching prediction,
+      and imagination-based policy optimization (PMPO), trained end-to-end on cloud GPUs.
+    </p>
+    <p>
+      That work included diagnosing a temporal-collapse failure in the tokenizer's latent
+      cross-attention and resolving it with frame-based rotary position embeddings. Current
+      projects: mechanistic interpretability of world-model latents &mdash; what control-oriented
+      dynamics models actually encode about physical state &mdash; and a diagnostic study of when
+      offline imagination-RL outperforms behavior cloning.
+    </p>
+  </section>
+
+  <section>
+    <h2>Selected work</h2>
+    <div class="row">
+      <div class="when">2026</div>
+      <div class="what">
+        <strong><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">dreamer_v4</a></strong> &mdash; open-source PyTorch reimplementation of DreamerV4
+        <div class="sub">
+          Training code, released <a href="https://huggingface.co/vijayabhaskarev/dreamer-v4">model weights</a>, and a documented benchmark study comparing
+          imagination-based RL against behavior cloning on DeepMind Control.
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="when">earlier</div>
+      <div class="what">
+        <strong>Open source</strong>
+        <div class="sub">Contributor, <a href="https://github.com/huggingface/transformers/pulls?q=is%3Apr+author%3Avijayabhaskar-ev+is%3Amerged">Hugging Face Transformers</a>.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+    <div class="row">
+      <div class="when">2026&mdash;</div>
+      <div class="what"><strong>Independent Researcher</strong>
+        <div class="sub">World models &amp; reinforcement learning &middot; India</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="when">2024&mdash;2026</div>
+      <div class="what"><strong>Software Engineer, Concentrix Catalyst</strong>
+        <div class="sub">Bengaluru, India</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="when">2023&mdash;2024</div>
+      <div class="what"><strong>Software Engineer, SignDesk</strong>
+        <div class="sub">Bengaluru, India</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="when">2021&mdash;2023</div>
+      <div class="what"><strong>Software Engineer, Advanced Millennium Technologies</strong>
+        <div class="sub">Bengaluru, India</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="meta">
+    Last updated July 2026
+  </footer>
+
+</main>
+</body>
+</html>
