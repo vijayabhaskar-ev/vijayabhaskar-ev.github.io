@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vijaya Bhaskar Eswaran · World models &amp; reinforcement learning</title>
-<meta name="description" content="Independent researcher. From-scratch Dreamer 4 in PyTorch and a verified study of whether imagination-based RL beats behavior cloning offline.">
+<meta name="description" content="Independent researcher. Dreamer 4 in PyTorch and a verified study of whether imagination-based RL beats behavior cloning offline.">
 <meta property="og:title" content="Vijaya Bhaskar Eswaran">
-<meta property="og:description" content="Does imagination help offline? A from-scratch Dreamer 4 and a six-run, 500-episode study: +5.9 points from one checkpoint; −32.6 to +24.2 across finetune retrains.">
+<meta property="og:description" content="Does imagination help offline? A Dreamer 4 implementation and a six-run, 500-episode study: +5.9 points from one checkpoint; −32.6 to +24.2 across finetune retrains.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://vijayabhaskar-ev.github.io/">
 <meta property="og:image" content="https://vijayabhaskar-ev.github.io/assets/og_image.png">
@@ -17,126 +17,130 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23fcfcfb'/%3E%3Cpath d='M10 50 L30 50 L54 18' fill='none' stroke='%230072b2' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10 50 L54 50' fill='none' stroke='%23d55e00' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  /* ---- tokens: light is the base; dark redefines tokens only ---- */
+  /* ---------- tokens: light base; dark redefines tokens only ---------- */
   :root{
-    --bg:#fcfcfb;
-    --ink:#1c2126;
-    --ink-2:#3b434b;
-    --muted:#5b6570;
-    --rule:#e3e6e3;
-    --rule-strong:#c9cec9;
-    --accent:#0072b2;      /* the belief line's blue, shared with the paper's figures */
-    --accent-ink:#005f95;
+    --bg:#fbfbfa;
+    --ink:#1b2026;
+    --ink-2:#3a424a;
+    --muted:#5f6973;
+    --faint:#8c959e;
+    --rule:#e2e5e2;
+    --rule-2:#cfd4cf;
+    --accent:#0072b2;
+    --accent-ink:#005b90;
     --figure-bg:#ffffff;
-    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --serif:'IBM Plex Serif',Georgia,'Times New Roman',serif;
     --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
     color-scheme:light dark;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#101418;
-      --ink:#e6e9ec;
-      --ink-2:#c3c9cf;
-      --muted:#98a2ad;
-      --rule:#262c33;
-      --rule-strong:#3a424b;
-      --accent:#5aa9e6;
-      --accent-ink:#7dbdf0;
-      --figure-bg:#ffffff;
+      --bg:#0f1317; --ink:#e7eaed; --ink-2:#c6ccd2; --muted:#9aa4ae; --faint:#6f7982;
+      --rule:#242a31; --rule-2:#39424b; --accent:#5aa9e6; --accent-ink:#8ac4f2; --figure-bg:#ffffff;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#101418;
-    --ink:#e6e9ec;
-    --ink-2:#c3c9cf;
-    --muted:#98a2ad;
-    --rule:#262c33;
-    --rule-strong:#3a424b;
-    --accent:#5aa9e6;
-    --accent-ink:#7dbdf0;
-    --figure-bg:#ffffff;
+    --bg:#0f1317; --ink:#e7eaed; --ink-2:#c6ccd2; --muted:#9aa4ae; --faint:#6f7982;
+    --rule:#242a31; --rule-2:#39424b; --accent:#5aa9e6; --accent-ink:#8ac4f2; --figure-bg:#ffffff;
   }
 
+  /* ---------- base ---------- */
   *{box-sizing:border-box;margin:0;padding:0}
-  html{font-size:17px}
+  html{font-size:17px;-webkit-text-size-adjust:100%}
   body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:var(--sans);
-    line-height:1.58;
-    padding:4.75rem 1.35rem 5rem;
-    -webkit-font-smoothing:antialiased;
-    font-variant-numeric:tabular-nums;
+    background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.58;padding:5.5rem 1.4rem 5rem;
+    -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;
   }
-  .col{max-width:44rem;margin:0 auto}
-  .wide{max-width:64rem;margin:0 auto}
-  a{color:var(--accent-ink);text-decoration:underline;text-decoration-color:var(--rule-strong);text-decoration-thickness:1px;text-underline-offset:.16em;transition:text-decoration-color .12s ease}
+  main{display:block}
+  .col{max-width:46rem;margin:0 auto}
+  .wide{max-width:66rem;margin:0 auto}
+  p{max-width:64ch;text-wrap:pretty}
+  a{color:var(--accent-ink);text-decoration:underline;text-decoration-color:var(--rule-2);
+    text-decoration-thickness:1px;text-underline-offset:.18em;transition:text-decoration-color .12s ease}
   a:hover{text-decoration-color:currentColor}
-  .links a,.paper-links a,figure a{text-decoration:none}
   a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
   strong{font-weight:600}
-  p{max-width:65ch}
+  em{font-style:italic}
 
-  /* ---- header ---- */
-  h1{font-size:2.1rem;font-weight:600;letter-spacing:-0.018em;line-height:1.15;text-wrap:balance}
-  .role{margin-top:.55rem;font-size:1.22rem;color:var(--ink-2);letter-spacing:-0.005em}
-  .meta{margin-top:.35rem;font-family:var(--mono);font-size:.82rem;color:var(--muted);max-width:none}
-  .lede{margin-top:2.1rem;font-size:1.12rem;line-height:1.5;color:var(--ink);max-width:36rem;text-wrap:pretty}
-  .lede b{font-weight:600;color:var(--ink)}
-  .links{display:flex;flex-wrap:wrap;gap:.35rem 1.25rem;margin-top:1rem;font-family:var(--mono);font-size:.84rem}
-  .bio{margin-top:1.9rem;font-size:1.04rem;color:var(--ink)}
+  /* ---------- header ---------- */
+  header{padding-bottom:2.4rem;border-bottom:1px solid var(--rule)}
+  h1{font-family:var(--serif);font-weight:500;font-size:2.55rem;line-height:1.1;letter-spacing:-0.012em;text-wrap:balance}
+  .topic{margin-top:.7rem;font-size:1.14rem;color:var(--ink-2)}
+  .meta{margin-top:.45rem;font-family:var(--mono);font-size:.8rem;color:var(--muted);max-width:none}
+  .links{display:flex;flex-wrap:wrap;gap:.35rem 1.4rem;margin-top:1.35rem;font-family:var(--mono);font-size:.82rem}
+  .links a{text-decoration:none;color:var(--accent-ink)}
+  .links a:hover{text-decoration:underline;text-decoration-color:currentColor}
+  .bio{margin-top:2.1rem;font-size:1.06rem;line-height:1.6;color:var(--ink)}
 
-  /* ---- sections ---- */
-  section{margin-top:3.6rem}
+  /* ---------- sections ---------- */
+  section{margin-top:3.9rem}
   .eyebrow{
-    font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.14em;line-height:1.4;
-    text-transform:uppercase;color:var(--muted);
-    padding-bottom:.55rem;border-bottom:1px solid var(--rule);margin-bottom:1.35rem
+    font-family:var(--mono);font-size:.7rem;font-weight:500;letter-spacing:.16em;line-height:1.4;
+    text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem
   }
 
-  /* ---- paper ---- */
-  .paper-title{font-size:1.42rem;font-weight:600;line-height:1.3;letter-spacing:-0.01em;text-wrap:balance;max-width:34ch}
-  .status{margin-top:.6rem;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+  /* ---------- paper: body + rail on wide screens ---------- */
+  .paper{display:grid;grid-template-columns:1fr;gap:1.6rem 2.6rem}
+  @media (min-width:900px){ .paper{grid-template-columns:minmax(0,1fr) 12.5rem} }
+  .paper-title{font-family:var(--serif);font-weight:500;font-size:1.62rem;line-height:1.28;letter-spacing:-0.008em;text-wrap:balance}
+  .status{margin-top:.75rem;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
   .status b{font-weight:500;color:var(--ink-2)}
-  .summary{margin-top:1.3rem;font-size:1.03rem;color:var(--ink)}
-  .findings{list-style:none;margin-top:1.5rem;display:grid;gap:.95rem}
-  .findings li{display:grid;grid-template-columns:10rem 1fr;gap:1rem;align-items:baseline}
-  .findings .num{font-family:var(--mono);font-size:.98rem;font-weight:500;color:var(--accent-ink);white-space:nowrap}
-  .findings .txt{color:var(--ink-2)}
-  .why{margin-top:1.5rem;padding-left:1rem;border-left:2px solid var(--rule-strong);color:var(--ink-2)}
-  .paper-links{display:flex;flex-wrap:wrap;gap:.4rem 1.25rem;margin-top:1.4rem;font-family:var(--mono);font-size:.84rem}
+  .summary{margin-top:1.35rem;font-size:1.04rem;color:var(--ink)}
+  .findings{list-style:none;margin-top:1.7rem;display:grid;gap:1.05rem}
+  .findings li{display:grid;grid-template-columns:9.5rem 1fr;gap:1.1rem;align-items:baseline}
+  .findings .num{font-family:var(--serif);font-weight:500;font-size:1.4rem;line-height:1.1;color:var(--accent-ink);white-space:nowrap;letter-spacing:-0.01em}
+  .findings .txt{color:var(--ink-2);max-width:none}
+  .why{margin-top:1.6rem;padding:.15rem 0 .15rem 1rem;border-left:2px solid var(--rule-2);color:var(--ink-2);max-width:none}
 
-  /* ---- figure (the one element allowed to break the column) ---- */
-  figure{margin:2.6rem auto 0}
-  figure .frame{background:var(--figure-bg);border:1px solid var(--rule);padding:.6rem}
+  /* rail: artifacts list */
+  .rail{padding-top:.35rem}
+  @media (min-width:900px){ .rail{border-left:1px solid var(--rule);padding-left:1.4rem} }
+  .rail .k{font-family:var(--mono);font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .artifacts{list-style:none;margin-top:.75rem}
+  .artifacts li{border-top:1px solid var(--rule);padding:.6rem 0}
+  .artifacts li:first-child{border-top:0;padding-top:0}
+  .artifacts a{display:block;text-decoration:none}
+  .artifacts .name{display:block;font-weight:500;color:var(--ink)}
+  .artifacts .dest{display:block;font-family:var(--mono);font-size:.74rem;color:var(--muted);margin-top:.15rem;overflow-wrap:anywhere}
+  .artifacts a:hover .name{color:var(--accent-ink)}
+  .artifacts a:hover .dest{color:var(--ink-2)}
+
+  /* ---------- figure ---------- */
+  figure{margin:3.2rem auto 0}
+  figure .frame{background:var(--figure-bg);border:1px solid var(--rule-2);padding:.7rem}
+  figure a{text-decoration:none;display:block}
   figure img{display:block;width:100%;height:auto}
-  figcaption{max-width:65ch;margin:.9rem auto 0;font-size:.9rem;line-height:1.55;color:var(--muted)}
+  figcaption{max-width:64ch;margin:1rem auto 0;font-size:.9rem;line-height:1.55;color:var(--muted)}
   figcaption b{font-weight:500;color:var(--ink-2)}
 
-  /* ---- how I work ---- */
-  .how{list-style:none;display:grid;gap:.8rem;color:var(--ink-2)}
-  .how li{display:grid;grid-template-columns:10rem 1fr;gap:1rem;align-items:baseline}
-  .how .k{font-family:var(--mono);font-size:.8rem;letter-spacing:.02em;color:var(--muted)}
+  /* ---------- key/value rows ---------- */
+  .kv{list-style:none;display:grid;gap:0}
+  .kv li{display:grid;grid-template-columns:9.5rem 1fr;gap:1.1rem;padding:.8rem 0;border-top:1px solid var(--rule);color:var(--ink-2)}
+  .kv li:first-child{border-top:0;padding-top:0}
+  .kv .k{font-family:var(--mono);font-size:.76rem;letter-spacing:.04em;color:var(--muted);padding-top:.2rem}
 
-  /* ---- rows (work, experience) ---- */
-  .row{display:grid;grid-template-columns:10rem 1fr;gap:1rem;padding:.75rem 0;border-top:1px solid var(--rule)}
+  /* ---------- rows (work, experience) ---------- */
+  .row{display:grid;grid-template-columns:9.5rem 1fr;gap:1.1rem;padding:.8rem 0;border-top:1px solid var(--rule)}
   .eyebrow + .row{border-top:0;padding-top:0}
-  .when{font-family:var(--mono);font-size:.84rem;color:var(--muted);padding-top:.15rem}
-  .sub{color:var(--muted);margin-top:.15rem}
-  .sub code{font-family:var(--mono);font-size:.86em}
+  .when{font-family:var(--mono);font-size:.8rem;color:var(--muted);padding-top:.2rem}
+  .row strong{font-weight:600;color:var(--ink)}
+  .sub{color:var(--muted);margin-top:.2rem;max-width:none}
 
-  footer{margin-top:4.5rem;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+  footer{margin-top:4.8rem;padding-top:1.2rem;border-top:1px solid var(--rule);font-family:var(--mono);font-size:.78rem;color:var(--faint)}
 
   @media (max-width:640px){
     html{font-size:16px}
-    body{padding:3rem 1.1rem 4rem}
-    h1{font-size:1.85rem}
-    .findings li,.how li,.row{grid-template-columns:1fr;gap:.25rem}
-    figure .frame{padding:.4rem}
+    body{padding:3.2rem 1.1rem 4rem}
+    h1{font-size:2.05rem}
+    .findings li,.kv li,.row{grid-template-columns:1fr;gap:.3rem}
+    .findings .num{font-size:1.25rem}
+    figure .frame{padding:.45rem}
   }
-  @media (prefers-reduced-motion: reduce){ a{transition:none} }
+  @media (prefers-reduced-motion: reduce){ a,.artifacts a{transition:none} }
 </style>
 </head>
 <body>
@@ -145,7 +149,7 @@
 
   <header>
     <h1>Vijaya Bhaskar Eswaran</h1>
-    <p class="role">World models &amp; reinforcement learning</p>
+    <p class="topic">World models &amp; reinforcement learning</p>
     <p class="meta">Independent researcher &middot; Bengaluru &middot; previously software engineer, 2021&ndash;2026</p>
     <nav class="links" aria-label="Contact">
       <a href="mailto:vijayabhaskarev@outlook.com">vijayabhaskarev@outlook.com</a>
@@ -164,54 +168,67 @@
 
   <section id="paper">
     <h2 class="eyebrow">Paper</h2>
-    <h3 class="paper-title">Does Imagination Help Offline? A Verified Empirical Study of
-      Imagination-Based Policy Optimization versus Behavior Cloning</h3>
-    <!-- STATUS: "manuscript" until submission is confirmed; then "under review" (no venue name while double-blind). -->
-    <p class="status">2026 &middot; single author &middot; <b>manuscript</b></p>
+    <div class="paper">
+      <div>
+        <h3 class="paper-title">Does Imagination Help Offline? A Verified Empirical Study of
+          Imagination-Based Policy Optimization versus Behavior Cloning</h3>
+        <!-- STATUS: "manuscript" until submission is confirmed; then "under review" (no venue name while double-blind). -->
+        <p class="status">2026 &middot; single author &middot; <b>manuscript</b></p>
 
-    <p class="summary">
-      A world model is a learned simulator an agent can practice in instead of the real
-      environment. Whether that practice helps when everything is learned from one fixed dataset
-      is unsettled. I tested it on one simple control task &mdash; catching a ball in a cup
-      &mdash; evaluating every policy on the same 500 real episodes. From one checkpoint,
-      practicing in imagination helped modestly and consistently. But retraining that checkpoint
-      with the same data and recipe swung the outcome from a large gain to a large loss, and
-      none of the offline metrics I measured reliably predicted which you would get. Ten real
-      episodes did.
-    </p>
+        <p class="summary">
+          A world model is a learned simulator an agent can practice in instead of the real
+          environment. Whether that practice helps when everything is learned from one fixed
+          dataset is unsettled. I tested it on one simple control task &mdash; catching a ball
+          in a cup &mdash; evaluating every policy on the same 500 real episodes. From one
+          checkpoint, practicing in imagination helped modestly and consistently. But retraining
+          that checkpoint with the same data and recipe swung the outcome from a large gain to a
+          large loss, and none of the offline metrics I measured reliably predicted which you
+          would get. Ten real episodes did.
+        </p>
 
-    <ul class="findings">
-      <li>
-        <span class="num">+5.9 points</span>
-        <span class="txt">of catch rate from imagination training over its behavior-cloning
-          checkpoint, the weakest BC baseline in the study (95%&nbsp;CI [+1.5,&nbsp;+10.4];
-          6/6 runs positive) &mdash; conditional on that one checkpoint.</span>
-      </li>
-      <li>
-        <span class="num">&minus;32.6 to +24.2</span>
-        <span class="txt">points across three retrains of the finetune with data and pretrained
-          base held bitwise fixed (&minus;32.6, &minus;8.3, +24.2). Which retrain you start from
-          explains &asymp;99% of the variance in deployed outcome (ICC&nbsp;0.99, 95%&nbsp;CI
-          [0.89,&nbsp;1.00]).</span>
-      </li>
-      <li>
-        <span class="num">10 real episodes</span>
-        <span class="txt">expose the collapsing run that no offline metric I measured reliably
-          flagged in advance: its policy learns to occupy states its own frozen reward model misgrades, and
-          the reward model&rsquo;s calibration error on those trajectories separates it from
-          every healthy policy with no overlap.</span>
-      </li>
-    </ul>
+        <ul class="findings">
+          <li>
+            <span class="num">+5.9 points</span>
+            <span class="txt">of catch rate from imagination training over its behavior-cloning
+              checkpoint, the weakest BC baseline in the study (95%&nbsp;CI [+1.5,&nbsp;+10.4];
+              6/6 runs positive) &mdash; conditional on that one checkpoint.</span>
+          </li>
+          <li>
+            <span class="num">&minus;32.6 to +24.2</span>
+            <span class="txt">points across three retrains of the finetune with data and
+              pretrained base held bitwise fixed (&minus;32.6, &minus;8.3, +24.2). Which retrain
+              you start from explains &asymp;99% of the variance in deployed outcome
+              (ICC&nbsp;0.99, 95%&nbsp;CI [0.89,&nbsp;1.00]).</span>
+          </li>
+          <li>
+            <span class="num">10 real episodes</span>
+            <span class="txt">expose the collapsing run that no offline metric I measured reliably
+              flagged in advance: its policy learns to occupy states its own frozen reward model
+              misgrades, and the reward model&rsquo;s calibration error on those trajectories
+              separates it from every healthy policy with no overlap.</span>
+          </li>
+        </ul>
 
-    <p class="why">Offline, the world-model checkpoint is the dominant random factor.
-      Imagination-trained policies should not be selected or deployed without a small
-      real-environment audit.</p>
+        <p class="why">Offline, the world-model checkpoint is the dominant random factor.
+          Imagination-trained policies should not be selected or deployed without a small
+          real-environment audit.</p>
+      </div>
 
-    <nav class="paper-links" aria-label="Paper links">
-      <a href="https://github.com/vijayabhaskar-ev/dreamer_v4">Code &amp; README</a>
-      <a href="https://huggingface.co/vijayabhaskarev/dreamer-v4">Weights</a>
-      <a href="https://github.com/vijayabhaskar-ev/dreamer_v4/blob/main/analysis/paper_stats.py">Regenerate the statistics</a>
-    </nav>
+      <aside class="rail" aria-label="Artifacts">
+        <div class="k">Artifacts</div>
+        <ul class="artifacts">
+          <li><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">
+            <span class="name">Code and README</span>
+            <span class="dest">github.com/vijayabhaskar-ev/dreamer_v4</span></a></li>
+          <li><a href="https://huggingface.co/vijayabhaskarev/dreamer-v4">
+            <span class="name">Model weights</span>
+            <span class="dest">huggingface.co/vijayabhaskarev/dreamer-v4</span></a></li>
+          <li><a href="https://github.com/vijayabhaskar-ev/dreamer_v4/blob/main/analysis/paper_stats.py">
+            <span class="name">Statistics script</span>
+            <span class="dest">analysis/paper_stats.py</span></a></li>
+        </ul>
+      </aside>
+    </div>
   </section>
 
 </div>
@@ -239,7 +256,7 @@
 
   <section id="reproducibility">
     <h2 class="eyebrow">Reproducibility</h2>
-    <ul class="how">
+    <ul class="kv">
       <li><span class="k">verified</span>
         <span>Component-wise: &lambda;-return and PMPO algebra
           <a href="https://github.com/vijayabhaskar-ev/dreamer_v4/tree/main/tests">unit-tested</a>;
@@ -269,8 +286,7 @@
           Masked-autoencoder video tokenizer &rarr; block-causal flow-matching transformer world
           model &rarr; behavior-cloned agent heads &rarr; imagination RL with PMPO and
           TD(&lambda;). Every phase runs end-to-end; the resulting policies are evaluated
-          closed-loop in the real environment. Trained end to end on single GPUs, one at a
-          time; every reported evaluation was run, or byte-identically re-verified, on one laptop.
+          closed-loop in the real environment. Trained end to end on single GPUs, one at a time.
         </div>
       </div>
     </div>
