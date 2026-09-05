@@ -86,7 +86,7 @@
   .lede{margin-top:2.1rem;font-size:1.12rem;line-height:1.5;color:var(--ink);max-width:36rem;text-wrap:pretty}
   .lede b{font-weight:600;color:var(--ink)}
   .links{display:flex;flex-wrap:wrap;gap:.35rem 1.25rem;margin-top:1rem;font-family:var(--mono);font-size:.84rem}
-  .bio{margin-top:1.25rem;font-size:1.02rem;color:var(--ink-2)}
+  .bio{margin-top:1.9rem;font-size:1.04rem;color:var(--ink)}
 
   /* ---- sections ---- */
   section{margin-top:3.6rem}
@@ -145,8 +145,8 @@
 
   <header>
     <h1>Vijaya Bhaskar Eswaran</h1>
-    <p class="role">I build world-model agents from scratch and measure whether imagination actually helps.</p>
-    <p class="meta">Independent researcher, world models &amp; reinforcement learning &middot; Bengaluru &middot; previously software engineer, 2021&ndash;2026</p>
+    <p class="role">World models &amp; reinforcement learning</p>
+    <p class="meta">Independent researcher &middot; Bengaluru &middot; previously software engineer, 2021&ndash;2026</p>
     <nav class="links" aria-label="Contact">
       <a href="mailto:vijayabhaskarev@outlook.com">vijayabhaskarev@outlook.com</a>
       <a href="https://github.com/vijayabhaskar-ev">GitHub</a>
@@ -154,19 +154,11 @@
       <a href="https://www.linkedin.com/in/vijaya-bhaskar-eswaran/">LinkedIn</a>
       <a href="https://x.com/vijayabhaskarev">X</a>
     </nav>
-    <p class="lede">
-      Same recipe, same data, same pretrained base: re-drawing only the finetune flips
-      imagination RL from <b>+24 to &minus;33 points</b> of catch rate. One lineage&rsquo;s policy
-      learns to exploit its own frozen reward model &mdash; on one episode, belief climbs to
-      <b>574</b> while real reward stays at <b>0</b> &mdash; and no offline metric I measured flags
-      it in advance. <b>Ten real episodes do.</b>
-    </p>
     <p class="bio">
-      I implemented DeepMind&rsquo;s Dreamer&nbsp;4 recipe from scratch in PyTorch and used it to
-      ask one question carefully: does training a policy inside a learned simulator beat
-      behavior cloning when the simulator, its reward model, and the starting policy all come
-      from a single fixed dataset? The answer turned out to depend on <em>which finetune run you
-      start from</em> &mdash; that finding is the paper.
+      I implemented DeepMind&rsquo;s Dreamer&nbsp;4 recipe in PyTorch and tested whether training
+      a policy inside a learned simulator beats behavior cloning when the simulator, its reward
+      model, and the starting policy all come from a single fixed dataset. The answer depends on
+      <em>which finetune run you start from</em> &mdash; that finding is the paper.
     </p>
   </header>
 
@@ -277,9 +269,8 @@
           Masked-autoencoder video tokenizer &rarr; block-causal flow-matching transformer world
           model &rarr; behavior-cloned agent heads &rarr; imagination RL with PMPO and
           TD(&lambda;). Every phase runs end-to-end; the resulting policies are evaluated
-          closed-loop in the real environment. Trained on single GPUs, one at a time
-          (RTX&nbsp;4090, A100, RTX&nbsp;5090); every reported evaluation was run, or
-          byte-identically re-verified, on a laptop RTX&nbsp;5070&nbsp;Ti.
+          closed-loop in the real environment. Trained end to end on single GPUs, one at a
+          time; every reported evaluation was run, or byte-identically re-verified, on one laptop.
         </div>
       </div>
     </div>
