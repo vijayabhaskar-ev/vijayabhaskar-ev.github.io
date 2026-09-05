@@ -3,184 +3,322 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vijaya Bhaskar Eswaran — World Models &amp; Reinforcement Learning</title>
-<meta name="description" content="Vijaya Bhaskar Eswaran — independent researcher working on world models and reinforcement learning. Open-source PyTorch reimplementation of DreamerV4.">
+<title>Vijaya Bhaskar Eswaran · World models &amp; reinforcement learning</title>
+<meta name="description" content="Independent researcher. From-scratch Dreamer 4 in PyTorch and a verified study of whether imagination-based RL beats behavior cloning offline.">
 <meta property="og:title" content="Vijaya Bhaskar Eswaran">
-<meta property="og:description" content="Independent researcher — world models &amp; reinforcement learning. Open-source PyTorch reimplementation of DreamerV4.">
+<meta property="og:description" content="Does imagination help offline? A from-scratch Dreamer 4 and a six-run, 500-episode study: +5.9 points from one checkpoint; −32.6 to +24.2 across finetune retrains.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://vijayabhaskar-ev.github.io/">
+<meta property="og:image" content="https://vijayabhaskar-ev.github.io/assets/og_image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://vijayabhaskar-ev.github.io/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23fcfcfb'/%3E%3Cpath d='M10 50 L30 50 L54 18' fill='none' stroke='%230072b2' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10 50 L54 50' fill='none' stroke='%23d55e00' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* ---- tokens: light is the base; dark redefines tokens only ---- */
   :root{
     --bg:#fcfcfb;
     --ink:#1c2126;
-    --muted:#59626c;
-    --line:#e5e7e4;
-    --accent:#1f47c4;
+    --ink-2:#3b434b;
+    --muted:#5b6570;
+    --rule:#e3e6e3;
+    --rule-strong:#c9cec9;
+    --accent:#0072b2;      /* the belief line's blue, shared with the paper's figures */
+    --accent-ink:#005f95;
+    --figure-bg:#ffffff;
     --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
     --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    color-scheme:light dark;
   }
   @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#12151a;
-      --ink:#e8eaec;
-      --muted:#9aa3ad;
-      --line:#272c33;
-      --accent:#84a0ff;
+    :root:not([data-theme="light"]){
+      --bg:#101418;
+      --ink:#e6e9ec;
+      --ink-2:#c3c9cf;
+      --muted:#98a2ad;
+      --rule:#262c33;
+      --rule-strong:#3a424b;
+      --accent:#5aa9e6;
+      --accent-ink:#7dbdf0;
+      --figure-bg:#ffffff;
     }
   }
+  :root[data-theme="dark"]{
+    --bg:#101418;
+    --ink:#e6e9ec;
+    --ink-2:#c3c9cf;
+    --muted:#98a2ad;
+    --rule:#262c33;
+    --rule-strong:#3a424b;
+    --accent:#5aa9e6;
+    --accent-ink:#7dbdf0;
+    --figure-bg:#ffffff;
+  }
+
   *{box-sizing:border-box;margin:0;padding:0}
   html{font-size:17px}
   body{
     background:var(--bg);
     color:var(--ink);
     font-family:var(--sans);
-    line-height:1.7;
-    padding:4.5rem 1.35rem 5rem;
+    line-height:1.58;
+    padding:4.75rem 1.35rem 5rem;
     -webkit-font-smoothing:antialiased;
+    font-variant-numeric:tabular-nums;
   }
-  main{max-width:42rem;margin:0 auto}
-  a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .12s ease}
-  a:hover{border-bottom-color:currentColor}
-  a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+  .col{max-width:44rem;margin:0 auto}
+  .wide{max-width:64rem;margin:0 auto}
+  a{color:var(--accent-ink);text-decoration:underline;text-decoration-color:var(--rule-strong);text-decoration-thickness:1px;text-underline-offset:.16em;transition:text-decoration-color .12s ease}
+  a:hover{text-decoration-color:currentColor}
+  .links a,.paper-links a,figure a{text-decoration:none}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+  strong{font-weight:600}
+  p{max-width:65ch}
 
-  /* header */
-  h1{font-size:1.9rem;font-weight:600;letter-spacing:-0.015em;line-height:1.2}
-  .role{margin-top:.4rem;margin-bottom:1.25rem;font-size:1.05rem;color:var(--muted)}
-  .meta{font-family:var(--mono);font-size:.84rem;color:var(--muted)}
-  .meta a{color:var(--accent)}
-  .contact{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;margin-top:.45rem}
+  /* ---- header ---- */
+  h1{font-size:2.1rem;font-weight:600;letter-spacing:-0.018em;line-height:1.15;text-wrap:balance}
+  .role{margin-top:.55rem;font-size:1.22rem;color:var(--ink-2);letter-spacing:-0.005em}
+  .meta{margin-top:.35rem;font-family:var(--mono);font-size:.82rem;color:var(--muted);max-width:none}
+  .lede{margin-top:2.1rem;font-size:1.12rem;line-height:1.5;color:var(--ink);max-width:36rem;text-wrap:pretty}
+  .lede b{font-weight:600;color:var(--ink)}
+  .links{display:flex;flex-wrap:wrap;gap:.35rem 1.25rem;margin-top:1rem;font-family:var(--mono);font-size:.84rem}
+  .bio{margin-top:1.25rem;font-size:1.02rem;color:var(--ink-2)}
 
-  /* sections */
-  section{margin-top:3.4rem}
-  h2{
-    font-family:var(--mono);
-    font-size:.74rem;
-    font-weight:500;
-    letter-spacing:.15em;
-    text-transform:uppercase;
-    color:var(--muted);
-    border-bottom:1px solid var(--line);
-    padding-bottom:.55rem;
-    margin-bottom:1.25rem;
-  }
-  p + p{margin-top:.95rem}
-
-  /* work + experience rows */
-  .row{
-    display:grid;
-    grid-template-columns:8.5rem 1fr;
-    gap:.2rem 1.4rem;
-    padding:.8rem 0;
-  }
-  .row + .row{border-top:1px solid var(--line)}
-  .when{font-family:var(--mono);font-size:.84rem;color:var(--muted);padding-top:.2rem}
-  .what strong{font-weight:600}
-  .what .sub{color:var(--muted);font-size:.95rem;margin-top:.15rem}
-  @media (max-width:540px){
-    body{padding-top:3rem}
-    h1{font-size:1.6rem}
-    .row{grid-template-columns:1fr}
-    .when{padding-top:0}
+  /* ---- sections ---- */
+  section{margin-top:3.6rem}
+  .eyebrow{
+    font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.14em;line-height:1.4;
+    text-transform:uppercase;color:var(--muted);
+    padding-bottom:.55rem;border-bottom:1px solid var(--rule);margin-bottom:1.35rem
   }
 
-  footer{
-    margin-top:4.5rem;
-    padding-top:1.1rem;
-    border-top:1px solid var(--line);
+  /* ---- paper ---- */
+  .paper-title{font-size:1.42rem;font-weight:600;line-height:1.3;letter-spacing:-0.01em;text-wrap:balance;max-width:34ch}
+  .status{margin-top:.6rem;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+  .status b{font-weight:500;color:var(--ink-2)}
+  .summary{margin-top:1.3rem;font-size:1.03rem;color:var(--ink)}
+  .findings{list-style:none;margin-top:1.5rem;display:grid;gap:.95rem}
+  .findings li{display:grid;grid-template-columns:10rem 1fr;gap:1rem;align-items:baseline}
+  .findings .num{font-family:var(--mono);font-size:.98rem;font-weight:500;color:var(--accent-ink);white-space:nowrap}
+  .findings .txt{color:var(--ink-2)}
+  .why{margin-top:1.5rem;padding-left:1rem;border-left:2px solid var(--rule-strong);color:var(--ink-2)}
+  .paper-links{display:flex;flex-wrap:wrap;gap:.4rem 1.25rem;margin-top:1.4rem;font-family:var(--mono);font-size:.84rem}
+
+  /* ---- figure (the one element allowed to break the column) ---- */
+  figure{margin:2.6rem auto 0}
+  figure .frame{background:var(--figure-bg);border:1px solid var(--rule);padding:.6rem}
+  figure img{display:block;width:100%;height:auto}
+  figcaption{max-width:65ch;margin:.9rem auto 0;font-size:.9rem;line-height:1.55;color:var(--muted)}
+  figcaption b{font-weight:500;color:var(--ink-2)}
+
+  /* ---- how I work ---- */
+  .how{list-style:none;display:grid;gap:.8rem;color:var(--ink-2)}
+  .how li{display:grid;grid-template-columns:10rem 1fr;gap:1rem;align-items:baseline}
+  .how .k{font-family:var(--mono);font-size:.8rem;letter-spacing:.02em;color:var(--muted)}
+
+  /* ---- rows (work, experience) ---- */
+  .row{display:grid;grid-template-columns:10rem 1fr;gap:1rem;padding:.75rem 0;border-top:1px solid var(--rule)}
+  .eyebrow + .row{border-top:0;padding-top:0}
+  .when{font-family:var(--mono);font-size:.84rem;color:var(--muted);padding-top:.15rem}
+  .sub{color:var(--muted);margin-top:.15rem}
+  .sub code{font-family:var(--mono);font-size:.86em}
+
+  footer{margin-top:4.5rem;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+
+  @media (max-width:640px){
+    html{font-size:16px}
+    body{padding:3rem 1.1rem 4rem}
+    h1{font-size:1.85rem}
+    .findings li,.how li,.row{grid-template-columns:1fr;gap:.25rem}
+    figure .frame{padding:.4rem}
   }
+  @media (prefers-reduced-motion: reduce){ a{transition:none} }
 </style>
 </head>
 <body>
 <main>
+<div class="col">
 
   <header>
     <h1>Vijaya Bhaskar Eswaran</h1>
-    <p class="role">Independent researcher &middot; World models &amp; reinforcement learning</p>
-
-    <div class="meta contact">
+    <p class="role">I build world-model agents from scratch and measure whether imagination actually helps.</p>
+    <p class="meta">Independent researcher, world models &amp; reinforcement learning &middot; Bengaluru &middot; previously software engineer, 2021&ndash;2026</p>
+    <nav class="links" aria-label="Contact">
       <a href="mailto:vijayabhaskarev@outlook.com">vijayabhaskarev@outlook.com</a>
-    </div>
-    <div class="meta contact">
       <a href="https://github.com/vijayabhaskar-ev">GitHub</a>
+      <a href="https://huggingface.co/vijayabhaskarev">Hugging&nbsp;Face</a>
       <a href="https://www.linkedin.com/in/vijaya-bhaskar-eswaran/">LinkedIn</a>
       <a href="https://x.com/vijayabhaskarev">X</a>
-    </div>
+    </nav>
+    <p class="lede">
+      Same recipe, same data, same pretrained base: re-drawing only the finetune flips
+      imagination RL from <b>+24 to &minus;33 points</b> of catch rate. One lineage&rsquo;s policy
+      learns to exploit its own frozen reward model &mdash; on one episode, belief climbs to
+      <b>574</b> while real reward stays at <b>0</b> &mdash; and no offline metric I measured flags
+      it in advance. <b>Ten real episodes do.</b>
+    </p>
+    <p class="bio">
+      I implemented DeepMind&rsquo;s Dreamer&nbsp;4 recipe from scratch in PyTorch and used it to
+      ask one question carefully: does training a policy inside a learned simulator beat
+      behavior cloning when the simulator, its reward model, and the starting policy all come
+      from a single fixed dataset? The answer turned out to depend on <em>which finetune run you
+      start from</em> &mdash; that finding is the paper.
+    </p>
   </header>
 
-  <section>
-    <h2>Research</h2>
-    <p>
-      I work on world models &mdash; neural networks that learn to simulate an environment well
-      enough for an agent to plan and learn inside them. My recent focus is an open-source
-      PyTorch reimplementation of
-      <a href="https://github.com/vijayabhaskar-ev/dreamer_v4">DreamerV4</a>: a masked-autoencoder
-      video tokenizer, a block-causal transformer dynamics model with flow-matching prediction,
-      and imagination-based policy optimization (PMPO), trained end-to-end on cloud GPUs.
+  <section id="paper">
+    <h2 class="eyebrow">Paper</h2>
+    <h3 class="paper-title">Does Imagination Help Offline? A Verified Empirical Study of
+      Imagination-Based Policy Optimization versus Behavior Cloning</h3>
+    <!-- STATUS: "manuscript" until submission is confirmed; then "under review" (no venue name while double-blind). -->
+    <p class="status">2026 &middot; single author &middot; <b>manuscript</b></p>
+
+    <p class="summary">
+      A world model is a learned simulator an agent can practice in instead of the real
+      environment. Whether that practice helps when everything is learned from one fixed dataset
+      is unsettled. I tested it on one simple control task &mdash; catching a ball in a cup
+      &mdash; evaluating every policy on the same 500 real episodes. From one checkpoint,
+      practicing in imagination helped modestly and consistently. But retraining that checkpoint
+      with the same data and recipe swung the outcome from a large gain to a large loss, and
+      none of the offline metrics I measured reliably predicted which you would get. Ten real
+      episodes did.
     </p>
-    <p>
-      That work included diagnosing a temporal-collapse failure in the tokenizer's latent
-      cross-attention and resolving it with frame-based rotary position embeddings. Current
-      projects: mechanistic interpretability of world-model latents &mdash; what control-oriented
-      dynamics models actually encode about physical state &mdash; and a diagnostic study of when
-      offline imagination-RL outperforms behavior cloning.
-    </p>
+
+    <ul class="findings">
+      <li>
+        <span class="num">+5.9 points</span>
+        <span class="txt">of catch rate from imagination training over its behavior-cloning
+          checkpoint, the weakest BC baseline in the study (95%&nbsp;CI [+1.5,&nbsp;+10.4];
+          6/6 runs positive) &mdash; conditional on that one checkpoint.</span>
+      </li>
+      <li>
+        <span class="num">&minus;32.6 to +24.2</span>
+        <span class="txt">points across three retrains of the finetune with data and pretrained
+          base held bitwise fixed (&minus;32.6, &minus;8.3, +24.2). Which retrain you start from
+          explains &asymp;99% of the variance in deployed outcome (ICC&nbsp;0.99, 95%&nbsp;CI
+          [0.89,&nbsp;1.00]).</span>
+      </li>
+      <li>
+        <span class="num">10 real episodes</span>
+        <span class="txt">expose the collapsing run that no offline metric I measured reliably
+          flagged in advance: its policy learns to occupy states its own frozen reward model misgrades, and
+          the reward model&rsquo;s calibration error on those trajectories separates it from
+          every healthy policy with no overlap.</span>
+      </li>
+    </ul>
+
+    <p class="why">Offline, the world-model checkpoint is the dominant random factor.
+      Imagination-trained policies should not be selected or deployed without a small
+      real-environment audit.</p>
+
+    <nav class="paper-links" aria-label="Paper links">
+      <a href="https://github.com/vijayabhaskar-ev/dreamer_v4">Code &amp; README</a>
+      <a href="https://huggingface.co/vijayabhaskarev/dreamer-v4">Weights</a>
+      <a href="https://github.com/vijayabhaskar-ev/dreamer_v4/blob/main/analysis/paper_stats.py">Regenerate the statistics</a>
+    </nav>
   </section>
 
-  <section>
-    <h2>Selected work</h2>
+</div>
+
+<figure class="wide">
+  <div class="frame">
+    <a href="assets/hero_site.png">
+      <picture>
+        <source media="(max-width:640px)" srcset="assets/hero_site_mobile.png" width="1000" height="640">
+        <img src="assets/hero_site.png" width="1698" height="1092" decoding="async"
+             alt="Two rows of frames and reward curves: a policy whose cumulative predicted reward climbs to 574 while true reward stays at 0, versus a healthy run whose prediction tracks reality to 920.">
+      </picture>
+    </a>
+  </div>
+  <figcaption>
+    <b>Identical pipeline; only the finetune draw differs.</b>
+    Top: the frozen reward model&rsquo;s cumulative belief reaches 574 on an episode whose real
+    reward stays 0 (true catch rate 0.126). Bottom: belief tracks reality to 920 (catch rate
+    0.704). Both are re-renders of stored evaluation episodes whose per-step logs are released,
+    verified bit-for-bit against those logs. <a href="https://github.com/vijayabhaskar-ev/dreamer_v4#hallucinated-success-on-camera">Animated versions</a> in the README.
+  </figcaption>
+</figure>
+
+<div class="col">
+
+  <section id="how">
+    <h2 class="eyebrow">How I work</h2>
+    <ul class="how">
+      <li><span class="k">verified</span>
+        <span>Component-wise: &lambda;-return and PMPO algebra
+          <a href="https://github.com/vijayabhaskar-ev/dreamer_v4/tree/main/tests">unit-tested</a>;
+          a gradient-isolation test checks that the agent token cannot leak into world-model
+          predictions; closed-loop evaluation is seed-deterministic on fixed hardware (90/90
+          replayed episodes identical).</span></li>
+      <li><span class="k">regenerable</span>
+        <span>Every closed-loop statistic in the paper regenerates from the released per-episode
+          logs with one script. The figure above was rendered from episodes checked against those
+          logs.</span></li>
+      <li><span class="k">corrected in public</span>
+        <span>A six-run study superseded my own single-run null, and the README keeps that
+          history visible. Smaller errors are fixed in commits that say what was wrong &mdash;
+          for example <a href="https://github.com/vijayabhaskar-ev/dreamer_v4/commit/c116865">c116865</a>,
+          a ranking test rebuilt as an exact permutation test.</span></li>
+    </ul>
+  </section>
+
+  <section id="work">
+    <h2 class="eyebrow">Selected work</h2>
     <div class="row">
       <div class="when">2026</div>
-      <div class="what">
-        <strong><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">dreamer_v4</a></strong> &mdash; open-source PyTorch reimplementation of DreamerV4
+      <div>
+        <strong><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">dreamer_v4</a></strong>
+        &mdash; from-scratch PyTorch implementation of Dreamer&nbsp;4
         <div class="sub">
-          Training code, released <a href="https://huggingface.co/vijayabhaskarev/dreamer-v4">model weights</a>, and a documented benchmark study comparing
-          imagination-based RL against behavior cloning on DeepMind Control.
+          Masked-autoencoder video tokenizer &rarr; block-causal flow-matching transformer world
+          model &rarr; behavior-cloned agent heads &rarr; imagination RL with PMPO and
+          TD(&lambda;). Every phase runs end-to-end; the resulting policies are evaluated
+          closed-loop in the real environment. Trained on single GPUs, one at a time
+          (RTX&nbsp;4090, A100, RTX&nbsp;5090); every reported evaluation was run, or
+          byte-identically re-verified, on a laptop RTX&nbsp;5070&nbsp;Ti.
         </div>
       </div>
     </div>
     <div class="row">
       <div class="when">earlier</div>
-      <div class="what">
+      <div>
         <strong>Open source</strong>
-        <div class="sub">Contributor, <a href="https://github.com/huggingface/transformers/pulls?q=is%3Apr+author%3Avijayabhaskar-ev+is%3Amerged">Hugging Face Transformers</a>.</div>
+        <div class="sub">Hugging Face Transformers &mdash; <a href="https://github.com/huggingface/transformers/pull/41276">#41276, DINOv3 AutoBackbone</a> (merged November 2025).</div>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Experience</h2>
+  <section id="experience">
+    <h2 class="eyebrow">Experience</h2>
     <div class="row">
-      <div class="when">2026&mdash;</div>
-      <div class="what"><strong>Independent Researcher</strong>
-        <div class="sub">World models &amp; reinforcement learning &middot; India</div>
-      </div>
+      <div class="when">2026&ndash;</div>
+      <div><strong>Independent Researcher</strong>
+        <div class="sub">World models &amp; reinforcement learning &middot; India</div></div>
     </div>
     <div class="row">
-      <div class="when">2024&mdash;2026</div>
-      <div class="what"><strong>Software Engineer, Concentrix Catalyst</strong>
-        <div class="sub">Bengaluru, India</div>
-      </div>
+      <div class="when">2024&ndash;2026</div>
+      <div><strong>Software Engineer, Concentrix Catalyst</strong>
+        <div class="sub">Bengaluru, India</div></div>
     </div>
     <div class="row">
-      <div class="when">2023&mdash;2024</div>
-      <div class="what"><strong>Software Engineer, SignDesk</strong>
-        <div class="sub">Bengaluru, India</div>
-      </div>
+      <div class="when">2023&ndash;2024</div>
+      <div><strong>Software Engineer, SignDesk</strong>
+        <div class="sub">Bengaluru, India</div></div>
     </div>
     <div class="row">
-      <div class="when">2021&mdash;2023</div>
-      <div class="what"><strong>Software Engineer, Advanced Millennium Technologies</strong>
-        <div class="sub">Bengaluru, India</div>
-      </div>
+      <div class="when">2021&ndash;2023</div>
+      <div><strong>Software Engineer, Advanced Millennium Technologies</strong>
+        <div class="sub">Bengaluru, India</div></div>
     </div>
   </section>
 
-  <footer class="meta">
-    Last updated July 2026
-  </footer>
+  <footer>Updated September 2026</footer>
 
+</div>
 </main>
 </body>
 </html>
