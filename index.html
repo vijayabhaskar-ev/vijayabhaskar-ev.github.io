@@ -15,214 +15,236 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://vijayabhaskar-ev.github.io/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='12'%20fill='%23fcfcfb'/%3E%3Cpath%20d='M10%2050%20L30%2050%20L54%2018'%20fill='none'%20stroke='%230072b2'%20stroke-width='7'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3Cpath%20d='M10%2050%20L54%2050'%20fill='none'%20stroke='%23d55e00'%20stroke-width='7'%20stroke-linecap='round'/%3E%3C/svg%3E">
+<script>
+  /* Light mode is the default. A visitor who picked dark mode gets it back before the first paint. */
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,300..600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* ---------- tokens: light base; dark redefines tokens only ---------- */
+  /* ---------- tokens: light is the default; dark only redefines tokens ---------- */
   :root{
-    --bg:#fcfcfb;
-    --ink:#1b1b19;
-    --ink-2:#3a3a37;
-    --muted:#5c5c57;
-    --faint:#706f69;
-    --rule:#e4e3de;
-    --accent:#0072b2;
-    --accent-hover:#005f96;
-    --smoothing:auto;
-    --serif:'Literata',Georgia,'Times New Roman',serif;
-    --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-    --t-2:12.5px; --t-1:14px; --t0:17px; --t1:20px; --t2:24px; --t3:30px; --t4:44px;
-    --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s6:48px; --s8:64px; --s12:96px;
-    --rail:9.5rem; --gutter:2.5rem; --page:46rem;
-    color-scheme:light dark;
+    color-scheme:light;
+    --bg:#ffffff;
+    --bg-alt:#fafafa;
+    --text:#000000;
+    --text-muted:#525252;
+    --text-faint:#767676;
+    --accent:#b9521a;
+    --border:#e5e5e5;
+    --border-strong:#cfcfcf;
+    --sans:'Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
+    --mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --radius:2px;
+    --max-width:880px;
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#141413; --ink:#e8e6df; --ink-2:#c9c7bf; --muted:#a3a199; --faint:#8f8e87;
-      --rule:#2b2b29; --accent:#56b4e9; --accent-hover:#7fc4ee; --smoothing:antialiased;
-    }
-  }
-  :root[data-theme="light"]{color-scheme:light}
   :root[data-theme="dark"]{
-    --bg:#141413; --ink:#e8e6df; --ink-2:#c9c7bf; --muted:#a3a199; --faint:#8f8e87;
-    --rule:#2b2b29; --accent:#56b4e9; --accent-hover:#7fc4ee; --smoothing:antialiased;
     color-scheme:dark;
+    --bg:#000000;
+    --bg-alt:#0f0f0f;
+    --text:#ffffff;
+    --text-muted:#a6a6a6;
+    --text-faint:#8a8a8a;
+    --accent:#e8892f;
+    --border:#262626;
+    --border-strong:#3d3d3d;
   }
 
   /* ---------- base ---------- */
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{background:var(--bg);color:var(--ink);font:400 var(--t0)/1.55 var(--sans);
-       font-kerning:normal;-webkit-font-smoothing:var(--smoothing);-webkit-text-size-adjust:100%}
-  body{background:var(--bg)}
-  .page{max-width:var(--page);margin-inline:auto;padding:var(--s12) var(--s3) var(--s8)}
-  p{text-wrap:pretty}
-  a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.18em;
-    text-decoration-color:color-mix(in oklab,currentColor 32%,transparent);transition:color .12s ease,text-decoration-color .12s ease}
-  a:hover{color:var(--accent-hover);text-decoration-color:currentColor}
-  a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-  em{font-style:italic}
-  .eyebrow{font:500 var(--t-2)/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--faint)}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55;
+       letter-spacing:.003em;-webkit-font-smoothing:antialiased;transition:background .2s ease,color .2s ease}
+  a{color:var(--accent)}
+  a:focus-visible,#theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  p{margin:0 0 1rem}
+  h1,h2,h3{font-weight:500}
+  .wrap{max-width:var(--max-width);margin:0 auto;padding:4rem 1.5rem 3rem}
 
-  /* ---------- header: full width, no rail ---------- */
-  .id h1{font:500 var(--t3)/1.15 var(--serif);letter-spacing:-.01em;margin-bottom:var(--s1);text-wrap:balance}
-  .id .topic{font-size:var(--t0);color:var(--muted);margin-bottom:var(--s1);max-width:36rem}
-  .id .meta{font:400 13px/1.55 var(--mono);color:var(--faint)}
-  .id .links{display:flex;flex-wrap:wrap;gap:.3rem 1.35rem;margin-top:var(--s2);font:400 13px/1.5 var(--mono)}
-  .id .links a{text-decoration:none;color:var(--muted)}
-  .id .links a:hover{color:var(--accent-hover);text-decoration:underline;text-decoration-color:currentColor}
-  .id .bio{margin-top:var(--s4);font-size:var(--t0);line-height:1.55;max-width:34rem;color:var(--ink)}
+  /* ---------- theme toggle: fixed, top right ---------- */
+  #theme-toggle{position:fixed;top:1rem;right:1rem;z-index:10;width:40px;height:40px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    border:1px solid var(--border);border-right-width:2px;border-bottom-width:2px;border-radius:var(--radius);
+    background:var(--bg);color:var(--text)}
+  #theme-toggle:hover{color:var(--accent);border-color:var(--border-strong)}
+  #theme-toggle svg{width:18px;height:18px}
+  #icon-moon{display:none}
+  :root[data-theme="dark"] #icon-sun{display:none}
+  :root[data-theme="dark"] #icon-moon{display:block}
 
-  /* ---------- section = hairline + eyebrow + rail | content ---------- */
-  .section{margin-top:var(--s12);border-top:1px solid var(--rule);padding-top:var(--s3);
-    display:grid;grid-template-columns:var(--rail) minmax(0,1fr);column-gap:var(--gutter);row-gap:var(--s3)}
-  .section > .eyebrow{grid-column:1/-1}
-  .rail{grid-column:1;grid-row:2;display:grid;align-content:start;row-gap:var(--s3)}
-  .content{grid-column:2;grid-row:2;max-width:34rem;min-width:0}
+  /* ---------- hero ---------- */
+  .hero{margin-bottom:2.5rem}
+  .hero h1{font-size:42px;line-height:1.1;letter-spacing:-.01em;margin:0 0 .5rem}
+  .tagline{margin:0 0 1rem;color:var(--text-muted);font-size:13px}
+  .intro{font-size:15px;line-height:22px;max-width:62ch;margin:0 0 1.25rem}
+  .intro a{text-decoration:none;font-weight:500}
+  .intro a:hover{text-decoration:underline}
+  .links{display:flex;flex-wrap:wrap;gap:.5rem .9rem}
+  .links a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;
+    border:1px solid var(--border);border-right-width:2px;border-bottom-width:2px;border-radius:var(--radius);
+    color:var(--text);text-decoration:none;font-size:13px;font-weight:500}
+  .links a:hover{color:var(--accent);border-color:var(--border-strong)}
 
-  /* rail metadata (status, artifacts) */
-  .kv-rail{display:grid;row-gap:var(--s2)}
-  .kv-rail dt{font:400 13px/1.55 var(--mono);color:var(--faint)}
-  .kv-rail dd{font:400 15px/1.45 var(--sans);color:var(--ink);overflow-wrap:anywhere}
-  .kv-rail dd a{color:var(--ink)}
-  .kv-rail dd a:hover{color:var(--accent-hover)}
-  .kv-rail small{display:block;font:400 13px/1.45 var(--sans);color:var(--muted)}
+  /* ---------- sections ---------- */
+  section{margin-bottom:3rem}
+  h2{font-size:24px;line-height:32px;letter-spacing:-.017em;margin:0 0 .5rem;padding-bottom:.75rem;
+     border-bottom:1px solid var(--border-strong)}
 
-  /* paper block */
-  .paper-title{font:500 var(--t2)/1.25 var(--serif);letter-spacing:-.005em;margin-bottom:var(--s2);text-wrap:balance}
-  .lede{font-size:var(--t1);line-height:1.5;color:var(--ink);margin-bottom:var(--s4)}
-  .findings{list-style:none;display:grid;row-gap:var(--s4);margin-bottom:var(--s4)}
-  .findings .num{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:.4em;row-gap:2px;
-    font:300 var(--t4)/1 var(--serif);color:var(--accent);
-    font-variant-numeric:proportional-nums lining-nums;letter-spacing:-.01em;margin-bottom:var(--s1)}
-  .findings .unit{font:400 13px/1.3 var(--mono);color:var(--muted);letter-spacing:0}
-  .findings p{color:var(--ink-2);max-width:30rem}
-  .implication{font-style:italic;color:var(--muted);max-width:30rem}
+  /* entry: thumbnail | text */
+  .item{display:flex;gap:1.25rem;padding:1.25rem 0;border-bottom:1px solid var(--border)}
+  .item:last-child{border-bottom:none}
+  .thumb{flex:0 0 auto;width:128px;height:85px;display:flex;align-items:center;justify-content:center}
+  .thumb img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:var(--radius)}
+  .thumb svg{display:block;width:100%;height:100%}
+  .item-body{min-width:0}
+  .item-body h3{margin:0 0 .35rem;font-size:15px;line-height:22px;letter-spacing:-.003em}
+  .item-meta{margin:0 0 .3rem;color:var(--text-faint);font-family:var(--mono);font-size:12px;line-height:20px}
+  .item-text{font-size:13px;line-height:20px;color:var(--text-muted);margin-bottom:.5rem}
+  .item-links a{text-decoration:none;font-family:var(--mono);font-size:12px}
+  .item-links a:hover{text-decoration:underline;text-underline-offset:3px}
 
-  /* figure: breaks out of the column */
-  figure.full{grid-column:1/-1;grid-row:3;margin-top:var(--s3);
-    width:min(62rem,100vw - 2*var(--s3));margin-left:50%;transform:translateX(-50%)}
-  figure.full img{display:block;width:100%;height:auto}
-  figure.full > a{text-decoration:none;display:block}
-  figcaption{font-size:var(--t-1);line-height:1.45;color:var(--muted);margin-top:12px;max-width:40rem}
+  /* pipeline sketch used as a thumbnail (follows the theme) */
+  .dg-box rect{fill:var(--bg-alt);stroke:var(--border-strong);stroke-width:1}
+  .dg-box text{font-family:var(--mono);font-size:10px;fill:var(--text-muted);text-anchor:middle;dominant-baseline:central}
+  .dg-accent rect{stroke:var(--accent)}
+  .dg-accent text{fill:var(--accent)}
+  .dg-arrow{fill:none;stroke:var(--text-faint);stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
 
-  /* rows: key | detail, shared by reproducibility, work, experience */
-  .rows{grid-column:1/-1;display:grid;row-gap:0}
-  .rows > div{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);column-gap:var(--gutter);
-    padding:12px 0;border-top:1px solid var(--rule)}
-  .rows > div:first-child{border-top:0;padding-top:0}
-  .rows .key{font:400 13px/1.55 var(--mono);color:var(--faint);font-variant-numeric:tabular-nums;padding-top:2px}
-  .rows .detail{font-size:15px;line-height:1.5;color:var(--ink-2);max-width:34rem}
-  .rows .detail .title{font-weight:500;color:var(--ink)}
-  .rows .detail .gloss{color:var(--muted);margin-top:2px}
-  .rows .detail .venue{font:400 13px/1.5 var(--mono);color:var(--faint);margin-top:2px}
+  /* experience: years | role */
+  .job{display:flex;gap:1.25rem;padding:.9rem 0;border-bottom:1px solid var(--border)}
+  .job:last-child{border-bottom:none}
+  .job-years{flex:0 0 128px;margin:0;font-family:var(--mono);font-size:12px;line-height:22px;color:var(--text-faint)}
+  .job h3{margin:0;font-size:15px;line-height:22px}
+  .job-org{margin:0;font-size:13px;line-height:20px;color:var(--text-muted)}
 
-  footer{margin-top:var(--s12);border-top:1px solid var(--rule);padding-top:var(--s3);
-    font:400 13px/1.6 var(--mono);color:var(--faint)}
-  footer a{color:var(--faint)}
+  footer{border-top:1px solid var(--border);padding-top:1.25rem;font-family:var(--mono);font-size:12px;color:var(--text-faint)}
+  footer p{margin:0}
 
-  @media (max-width:48rem){
-    .page{padding-top:var(--s8)}
-    .section{grid-template-columns:minmax(0,1fr);margin-top:var(--s8);row-gap:var(--s2)}
-    .rail,.content,figure.full{grid-column:1;grid-row:auto}
-    .rows > div{grid-template-columns:1fr;row-gap:4px}
-    .findings .num{font-size:36px}
-    .paper-title{font-size:22px}
-    .lede{font-size:18px}
-    figure.full{width:min(62rem,100vw - 2*var(--s2))}
-    .id h1{font-size:var(--t2)}
+  @media (max-width:640px){
+    .wrap{padding-top:4.5rem}
+    .hero h1{font-size:34px}
+    .item{flex-direction:column;gap:.9rem}
+    .thumb{width:100%;height:96px}
+    .job{flex-direction:column;gap:.1rem}
+    .job-years{flex-basis:auto}
   }
-  @media (prefers-reduced-motion: reduce){ a{transition:none} }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    body{transition:none}
+  }
 </style>
 </head>
 <body>
-<main class="page">
 
-  <header class="id">
+<button id="theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false" title="Switch between light and dark mode">
+  <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+</button>
+
+<div class="wrap">
+
+  <header class="hero">
     <h1>Vijaya Bhaskar Eswaran</h1>
-    <p class="topic">World models &amp; reinforcement learning</p>
-    <p class="meta">Independent researcher, Bengaluru<br>Previously software engineer, 2021&ndash;2026</p>
-    <nav class="links" aria-label="Contact">
-      <a href="mailto:vijayabhaskarev@outlook.com">vijayabhaskarev@outlook.com</a>
-      <a href="https://github.com/vijayabhaskar-ev">github</a>
-      <a href="https://www.linkedin.com/in/vijaya-bhaskar-eswaran">linkedin</a>
-      <a href="https://x.com/vijayabhaskarev">x</a>
-    </nav>
-    <p class="bio">
-      I implemented DeepMind&rsquo;s Dreamer&nbsp;4 recipe in PyTorch and am now using it to study
-      when an agent that practices inside a learned simulator does better than one that simply
-      imitates demonstrations.
+    <p class="tagline">Independent researcher, world models &amp; reinforcement learning · Bengaluru</p>
+    <p class="intro">
+      I implemented DeepMind&rsquo;s <a href="https://arxiv.org/abs/2509.24527">Dreamer&nbsp;4</a> recipe in
+      PyTorch and am now using it to study when an agent that practices inside a learned simulator does
+      better than one that simply imitates demonstrations. Before this, I worked as a software engineer
+      from 2021 to 2026.
     </p>
+    <nav class="links" aria-label="Contact and profile links">
+      <a href="mailto:vijayabhaskarev@outlook.com">Email</a>
+      <a href="https://github.com/vijayabhaskar-ev">GitHub</a>
+      <a href="https://www.linkedin.com/in/vijaya-bhaskar-eswaran">LinkedIn</a>
+      <a href="https://x.com/vijayabhaskarev">X</a>
+    </nav>
   </header>
 
-  <section class="section" id="current">
-    <h2 class="eyebrow">Current work</h2>
+  <main>
 
-    <div class="content">
-      <h3 class="paper-title">Practicing inside a learned simulator, from a fixed dataset</h3>
-      <p class="lede">
-        A world model is a learned simulator that an agent can practice in instead of the real
-        environment. I am studying whether that practice helps when the simulator, its reward
-        model, and the starting policy are all learned from one fixed set of demonstrations. The
-        testbed is a simple control task, catching a ball in a cup, and every policy is judged by
-        how it does in the real environment, not in the simulator.
-      </p>
-    </div>
-
-    <aside class="rail" aria-label="Project metadata">
-      <dl class="kv-rail">
-        <!-- STATUS: "In progress" until a paper is submitted; then "Under review" (no venue name while double-blind). -->
-        <div><dt>status</dt><dd>In progress</dd></div>
-        <div><dt>code</dt><dd><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">github.com/<wbr>vijayabhaskar-ev/<wbr>dreamer_v4</a></dd></div>
-      </dl>
-    </aside>
-  </section>
-
-  <section class="section" id="work">
-    <h2 class="eyebrow">Selected work</h2>
-    <div class="rows">
-      <div>
-        <div class="key">2026</div>
-        <div class="detail">
-          <div class="title"><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">dreamer_v4</a> &mdash; PyTorch implementation of Dreamer&nbsp;4</div>
-          <p class="gloss">Masked-autoencoder video tokenizer, block-causal flow-matching
-            transformer world model, behavior-cloned agent heads, then imagination RL with PMPO
-            and TD(&lambda;). Every phase runs end-to-end on a single GPU, and the resulting
-            policies are evaluated closed-loop in the real environment.</p>
+    <section id="current">
+      <h2>Current Work</h2>
+      <article class="item">
+        <div class="thumb"><img src="assets/ball_in_cup.jpg" width="360" height="240" alt="The ball-in-cup task from the DeepMind Control Suite: a cup on a stick, with a ball hanging from it on a string"></div>
+        <div class="item-body">
+          <h3>Practicing inside a learned simulator, from a fixed dataset</h3>
+          <!-- STATUS: "In progress" until a paper is submitted; then "Under review" (no venue name while double-blind). -->
+          <p class="item-meta">In progress · 2026</p>
+          <p class="item-text">A world model is a learned simulator that an agent can practice in instead of the real
+            environment. I am studying whether that practice helps when the simulator, its reward model, and the
+            starting policy are all learned from one fixed set of demonstrations. The testbed is a simple control
+            task, catching a ball in a cup, and every policy is judged by how it does in the real environment, not
+            in the simulator.</p>
+          <div class="item-links"><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">Code</a></div>
         </div>
-      </div>
-    </div>
-  </section>
+      </article>
+    </section>
 
-  <section class="section" id="experience">
-    <h2 class="eyebrow">Experience</h2>
-    <div class="rows">
-      <div>
-        <div class="key">2026&ndash;</div>
-        <div class="detail"><span class="title">Independent Researcher</span>
-          <p class="gloss">World models &amp; reinforcement learning, India</p></div>
-      </div>
-      <div>
-        <div class="key">2024&ndash;2026</div>
-        <div class="detail"><span class="title">Software Engineer, Concentrix Catalyst</span>
-          <p class="gloss">Bengaluru, India</p></div>
-      </div>
-      <div>
-        <div class="key">2023&ndash;2024</div>
-        <div class="detail"><span class="title">Software Engineer, SignDesk</span>
-          <p class="gloss">Bengaluru, India</p></div>
-      </div>
-      <div>
-        <div class="key">2021&ndash;2023</div>
-        <div class="detail"><span class="title">Software Engineer, Advanced Millennium Technologies</span>
-          <p class="gloss">Bengaluru, India</p></div>
-      </div>
-    </div>
-  </section>
+    <section id="work">
+      <h2>Selected Work</h2>
+      <article class="item">
+        <div class="thumb">
+          <svg viewBox="0 0 128 85" aria-hidden="true" focusable="false">
+            <g class="dg-box"><rect x="0.5" y="0.5" width="127" height="21" rx="2"/><text x="64" y="11">video tokenizer</text></g>
+            <path class="dg-arrow" d="M64 23.5v6m-3-3 3 3 3-3"/>
+            <g class="dg-box"><rect x="0.5" y="31.5" width="127" height="21" rx="2"/><text x="64" y="42">world model</text></g>
+            <path class="dg-arrow" d="M64 54.5v6m-3-3 3 3 3-3"/>
+            <g class="dg-box dg-accent"><rect x="0.5" y="62.5" width="127" height="21" rx="2"/><text x="64" y="73">agent</text></g>
+          </svg>
+        </div>
+        <div class="item-body">
+          <h3>dreamer_v4: a PyTorch implementation of Dreamer&nbsp;4</h3>
+          <p class="item-meta">Open-source code · 2026</p>
+          <p class="item-text">Masked-autoencoder video tokenizer, block-causal flow-matching transformer world model,
+            behavior-cloned agent heads, then imagination RL with PMPO and TD(&lambda;). Every phase runs end-to-end
+            on a single GPU, and the resulting policies are evaluated closed-loop in the real environment.</p>
+          <div class="item-links"><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">Code</a></div>
+        </div>
+      </article>
+    </section>
 
-  <footer><a href="mailto:vijayabhaskarev@outlook.com">vijayabhaskarev@outlook.com</a><br>Updated September 2026</footer>
+    <section id="experience">
+      <h2>Experience</h2>
+      <div class="job">
+        <p class="job-years">2026&ndash;present</p>
+        <div><h3>Independent Researcher</h3><p class="job-org">World models &amp; reinforcement learning, India</p></div>
+      </div>
+      <div class="job">
+        <p class="job-years">2024&ndash;2026</p>
+        <div><h3>Software Engineer, Concentrix Catalyst</h3><p class="job-org">Bengaluru, India</p></div>
+      </div>
+      <div class="job">
+        <p class="job-years">2023&ndash;2024</p>
+        <div><h3>Software Engineer, SignDesk</h3><p class="job-org">Bengaluru, India</p></div>
+      </div>
+      <div class="job">
+        <p class="job-years">2021&ndash;2023</p>
+        <div><h3>Software Engineer, Advanced Millennium Technologies</h3><p class="job-org">Bengaluru, India</p></div>
+      </div>
+    </section>
 
-</main>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Vijaya Bhaskar Eswaran · Updated September 2026</p>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById('theme-toggle');
+    function sync() { btn.setAttribute('aria-pressed', root.getAttribute('data-theme') === 'dark' ? 'true' : 'false'); }
+    sync();
+    btn.addEventListener('click', function () {
+      var dark = root.getAttribute('data-theme') !== 'dark';
+      if (dark) root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+      try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+      sync();
+    });
+  })();
+</script>
 </body>
 </html>
