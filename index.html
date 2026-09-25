@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vijaya Bhaskar Eswaran · World models &amp; reinforcement learning</title>
-<meta name="description" content="Independent researcher. Dreamer 4 in PyTorch and a verified study of whether imagination-based RL beats behavior cloning offline.">
+<meta name="description" content="Independent researcher in world models and reinforcement learning, working on a PyTorch implementation of Dreamer 4 and on training policies inside learned simulators.">
 <meta property="og:title" content="Vijaya Bhaskar Eswaran">
-<meta property="og:description" content="Does imagination help offline? A Dreamer 4 implementation and a six-run, 500-episode study: +5.9 points from one checkpoint; −32.6 to +24.2 across finetune retrains.">
+<meta property="og:description" content="World models and reinforcement learning: a PyTorch implementation of Dreamer 4, and ongoing work on training policies inside a learned simulator from a fixed dataset.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://vijayabhaskar-ev.github.io/">
-<meta property="og:image" content="https://vijayabhaskar-ev.github.io/assets/og_image.png">
+<meta property="og:image" content="https://vijayabhaskar-ev.github.io/assets/og_card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -151,115 +151,33 @@
       <a href="https://x.com/vijayabhaskarev">x</a>
     </nav>
     <p class="bio">
-      I implemented DeepMind&rsquo;s Dreamer&nbsp;4 recipe in PyTorch and tested whether training
-      a policy inside a learned simulator beats behavior cloning when the simulator, its reward
-      model, and the starting policy all come from a single fixed dataset. The answer depends on
-      <em>which finetune run you start from</em> &mdash; that finding is the paper.
+      I implemented DeepMind&rsquo;s Dreamer&nbsp;4 recipe in PyTorch and am now using it to study
+      when an agent that practices inside a learned simulator does better than one that simply
+      imitates demonstrations.
     </p>
   </header>
 
-  <section class="section" id="paper">
-    <h2 class="eyebrow">Paper</h2>
-
+  <section class="section" id="current">
+    <h2 class="eyebrow">Current work</h2>
 
     <div class="content">
-      <h3 class="paper-title">Does Imagination in a World Model Beat Behavior Cloning in the Offline Setting?</h3>
+      <h3 class="paper-title">Practicing inside a learned simulator, from a fixed dataset</h3>
       <p class="lede">
-        A world model is a learned simulator an agent can practice in instead of the real
-        environment. Whether that practice helps when everything is learned from one fixed
-        dataset is unsettled. I tested it on one simple control task &mdash; catching a ball in
-        a cup &mdash; evaluating every policy on the same 500 real episodes. From one checkpoint,
-        practicing in imagination helped modestly and consistently. But retraining that
-        checkpoint with the same data and recipe swung the outcome from a large gain to a large
-        loss, and none of the offline metrics I measured reliably predicted which you would get.
-        Ten real episodes did.
+        A world model is a learned simulator that an agent can practice in instead of the real
+        environment. I am studying whether that practice helps when the simulator, its reward
+        model, and the starting policy are all learned from one fixed set of demonstrations. The
+        testbed is a simple control task, catching a ball in a cup, and every policy is judged by
+        how it does in the real environment, not in the simulator.
       </p>
-
-      <ol class="findings" role="list">
-        <li>
-          <span class="num">+5.9<span class="unit">points of catch rate</span></span>
-          <p>from imagination training over its behavior-cloning checkpoint, the weakest BC
-            baseline in the study (95%&thinsp;CI [+1.5,&thinsp;+10.4]; 6/6 runs positive)
-            &mdash; conditional on that one checkpoint.</p>
-        </li>
-        <li>
-          <span class="num">&minus;32.6 to +24.2<span class="unit">points across retrains</span></span>
-          <p>from three retrains of the finetune with data and pretrained base held bitwise fixed
-            (&minus;32.6, &minus;8.3, +24.2). Which retrain you start from explains
-            &asymp;99% of the variance in deployed outcome (ICC&thinsp;0.99, 95%&thinsp;CI
-            [0.89,&thinsp;1.00]).</p>
-        </li>
-        <li>
-          <span class="num">10<span class="unit">real episodes</span></span>
-          <p>expose the collapsing run that no offline metric I measured reliably flagged in
-            advance: its policy learns to occupy states its own frozen reward model misgrades,
-            and the reward model&rsquo;s calibration error on those trajectories separates it
-            from every healthy policy with no overlap.</p>
-        </li>
-      </ol>
-
-      <p class="implication">Offline, the world-model checkpoint is the dominant random factor.
-        Imagination-trained policies should not be selected or deployed without a small
-        real-environment audit.</p>
     </div>
 
-    <aside class="rail" aria-label="Paper metadata">
+    <aside class="rail" aria-label="Project metadata">
       <dl class="kv-rail">
-        <!-- STATUS: "Manuscript" until submission is confirmed; then "Under review" (no venue name while double-blind). -->
-        <div><dt>status</dt><dd>Manuscript, 2026</dd></div>
-        <div><dt>author</dt><dd>Single author</dd></div>
+        <!-- STATUS: "In progress" until a paper is submitted; then "Under review" (no venue name while double-blind). -->
+        <div><dt>status</dt><dd>In progress</dd></div>
         <div><dt>code</dt><dd><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">github.com/<wbr>vijayabhaskar-ev/<wbr>dreamer_v4</a></dd></div>
-        <div><dt>weights</dt><dd><a href="https://huggingface.co/vijayabhaskarev/dreamer-v4">huggingface.co/<wbr>vijayabhaskarev/<wbr>dreamer-v4</a></dd></div>
-        <div><dt>statistics</dt><dd><a href="https://github.com/vijayabhaskar-ev/dreamer_v4/blob/main/analysis/paper_stats.py">analysis/<wbr>paper_stats.py</a>
-          <small>regenerates every closed-loop number on this page from the released per-episode logs</small></dd></div>
       </dl>
     </aside>
-
-    <figure class="full">
-      <a href="https://github.com/vijayabhaskar-ev/dreamer_v4#hallucinated-success-on-camera">
-        <picture>
-          <source media="(prefers-color-scheme: dark) and (max-width:640px)" srcset="assets/hero_site_mobile_dark.png" width="1080" height="1352">
-          <source media="(prefers-color-scheme: dark)" srcset="assets/hero_site_dark.png" width="1698" height="1092">
-          <source media="(max-width:640px)" srcset="assets/hero_site_mobile.png" width="1080" height="1352">
-          <img src="assets/hero_site.png" width="1698" height="1092" decoding="async"
-               alt="Exploiting run: the frozen reward model's cumulative belief climbs to 574 while the true reward stays 0. Healthy run from a different finetune draw: belief tracks reality to 920.">
-        </picture>
-      </a>
-      <figcaption>
-        Identical pipeline; only the finetune draw differs. Top: the frozen reward model&rsquo;s
-        cumulative belief reaches 574 on an episode whose real reward stays 0 (true catch rate
-        0.126). Bottom: belief tracks reality to 920 (catch rate 0.704). Both are re-renders of
-        stored evaluation episodes whose per-step logs are released, verified bit-for-bit against
-        those logs. <a href="https://github.com/vijayabhaskar-ev/dreamer_v4#hallucinated-success-on-camera">Animated versions</a> in the README.
-      </figcaption>
-    </figure>
-  </section>
-
-  <section class="section" id="reproducibility">
-    <h2 class="eyebrow">Reproducibility</h2>
-    <div class="rows">
-      <div>
-        <div class="key">verified</div>
-        <div class="detail">Component-wise: &lambda;-return and PMPO algebra
-          <a href="https://github.com/vijayabhaskar-ev/dreamer_v4/tree/main/tests">unit-tested</a>;
-          a gradient-isolation test checks that the agent token cannot leak into world-model
-          predictions; closed-loop evaluation is seed-deterministic on fixed hardware (90/90
-          replayed episodes identical).</div>
-      </div>
-      <div>
-        <div class="key">regenerable</div>
-        <div class="detail">Every closed-loop statistic in the paper regenerates from the released
-          per-episode logs with one script. The figure above was rendered from episodes checked
-          against those logs.</div>
-      </div>
-      <div>
-        <div class="key">corrections</div>
-        <div class="detail">A six-run study superseded my own single-run null, and the README
-          keeps that history visible. Smaller errors are fixed in commits that say what was wrong
-          &mdash; for example <a href="https://github.com/vijayabhaskar-ev/dreamer_v4/commit/c116865">c116865</a>,
-          a ranking test rebuilt as an exact permutation test.</div>
-      </div>
-    </div>
   </section>
 
   <section class="section" id="work">
