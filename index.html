@@ -170,12 +170,15 @@
         <div class="item-body">
           <h3>Practicing inside a learned simulator, from a fixed dataset</h3>
           <!-- STATUS: "In progress" until a paper is submitted; then "Under review" (no venue name while double-blind). -->
-          <p class="item-meta">In progress · 2026</p>
+          <p class="item-meta">Under review · 2026</p>
           <p class="item-text">A world model is a learned simulator that an agent can practice in instead of the real
             environment. I am studying whether that practice helps when the simulator, its reward model, and the
             starting policy are all learned from one fixed set of demonstrations. The testbed is a simple control
             task, catching a ball in a cup, and every policy is judged by how it does in the real environment, not
-            in the simulator.</p>
+            in the simulator. Across 8 retrains of the imitation stage and 3 imagination seeds each, practicing in
+            the simulator raised the catch rate in all 24 runs, by 27 percentage points on average. Two silent
+            defects in my first pipeline had passed all 12 of my checks; the paper describes three cheap checks
+            that catch them.</p>
           <div class="item-links"><a href="https://github.com/vijayabhaskar-ev/dreamer_v4">Code</a></div>
         </div>
       </article>
