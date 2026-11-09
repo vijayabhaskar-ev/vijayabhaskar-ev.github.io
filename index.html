@@ -101,6 +101,7 @@
   .item-body h3{margin:0 0 .35rem;font-size:15px;line-height:22px;letter-spacing:-.003em}
   .item-meta{margin:0 0 .3rem;color:var(--text-faint);font-family:var(--mono);font-size:12px;line-height:20px}
   .item-text{font-size:13px;line-height:20px;color:var(--text-muted);margin-bottom:.5rem}
+  .item-links{display:flex;flex-wrap:wrap;gap:.3rem 1.1rem;margin-top:.5rem}
   .item-links a{text-decoration:none;font-family:var(--mono);font-size:12px}
   .item-links a:hover{text-decoration:underline;text-underline-offset:3px}
 
@@ -146,12 +147,14 @@
 
   <header class="hero">
     <h1>Vijaya Bhaskar Eswaran</h1>
-    <p class="tagline">Independent researcher, world models &amp; reinforcement learning · Bengaluru</p>
+    <p class="tagline">Independent researcher, world models &amp; reinforcement learning</p>
     <p class="intro">
       I implemented DeepMind&rsquo;s <a href="https://arxiv.org/abs/2509.24527">Dreamer&nbsp;4</a> recipe in
-      PyTorch and am now using it to study when an agent that practices inside a learned simulator does
-      better than one that simply imitates demonstrations. Before this, I worked as a software engineer
-      from 2021 to 2026.
+      PyTorch from scratch and used it to test whether an agent that practices inside a learned simulator beats
+      one that only imitates demonstrations. The study became a preprint on silent pipeline defects in
+      world-model RL: two defects had passed all twelve of my checks, and the paper describes three cheap checks
+      that catch them. I&rsquo;m now building a fidelity gate for imagination training, so a policy practices
+      only where the world model can be trusted. Before this, I worked as a software engineer from 2021 to 2026.
     </p>
     <nav class="links" aria-label="Contact and profile links">
       <a href="mailto:vijayabhaskarev@outlook.com">Email</a>
@@ -164,7 +167,7 @@
   <main>
 
     <section id="current">
-      <h2>Current Work</h2>
+      <h2>Paper</h2>
       <article class="item">
         <div class="thumb"><img src="assets/ball_in_cup.jpg" width="360" height="240" alt="The ball-in-cup task from the DeepMind Control Suite: a cup on a stick, with a ball hanging from it on a string"></div>
         <div class="item-body">
@@ -172,7 +175,7 @@
           <!-- STATUS: "Preprint" since 21 Oct 2026; replace the PDF link with the arXiv link when live. -->
           <p class="item-meta">Preprint · 2026</p>
           <p class="item-text">A world model is a learned simulator that an agent can practice in instead of the real
-            environment. I am studying whether that practice helps when the simulator, its reward model, and the
+            environment. I studied whether that practice helps when the simulator, its reward model, and the
             starting policy are all learned from one fixed set of demonstrations. The testbed is a simple control
             task, catching a ball in a cup, and every policy is judged by how it does in the real environment, not
             in the simulator. Across 8 retrains of the imitation stage and 3 imagination seeds each, practicing in
