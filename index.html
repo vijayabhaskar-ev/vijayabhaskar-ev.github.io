@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vijaya Bhaskar Eswaran · World models &amp; reinforcement learning</title>
-<meta name="description" content="Independent researcher in world models and reinforcement learning, working on a PyTorch implementation of Dreamer 4 and on training policies inside learned simulators.">
+<meta name="description" content="Independent researcher in world models and reinforcement learning: a PyTorch implementation of Dreamer 4, and a fidelity gate that keeps a policy from training on dreams the real environment does not confirm.">
 <meta property="og:title" content="Vijaya Bhaskar Eswaran">
 <meta property="og:description" content="World models and reinforcement learning: a PyTorch implementation of Dreamer 4, and ongoing work on training policies inside a learned simulator from a fixed dataset.">
 <meta property="og:type" content="website">
@@ -153,8 +153,9 @@
       PyTorch from scratch and used it to test whether an agent that practices inside a learned simulator beats
       one that only imitates demonstrations. The study became a preprint on silent pipeline defects in
       world-model RL: two defects had passed all twelve of my checks, and the paper describes three cheap checks
-      that catch them. I&rsquo;m now building a fidelity gate for imagination training, so a policy practices
-      only where the world model can be trusted. Before this, I worked as a software engineer from 2021 to 2026.
+      that catch them. I&rsquo;m now testing a fidelity gate for imagination training, which removes the dreams
+      that promise more than the real environment gives; in a first test it raised the real catch rate from 70% to
+      86%. Before this, I worked as a software engineer from 2021 to 2026.
     </p>
     <nav class="links" aria-label="Contact and profile links">
       <a href="mailto:vijayabhaskarev@outlook.com">Email</a>
@@ -189,6 +190,20 @@
 
     <section id="work">
       <h2>Selected Work</h2>
+      <article class="item">
+        <div class="thumb"><img src="assets/gate_training_arms.png" width="1267" height="806" alt="Real catch rate of every training run: the three gated runs sit above all nine runs without the gate"></div>
+        <div class="item-body">
+          <h3>gated-imagination: a fidelity gate for training in dreams</h3>
+          <p class="item-meta">Ongoing · 2026</p>
+          <p class="item-text">A world model can dream reward that the real environment never gives, and a policy
+            trained in it learns from those dreams. On ball-in-cup catch, this project measures how often that
+            happens, tests cheap scores that find those dreams, and tests what happens when they are removed from
+            training. Removing them with a gate that checks each dream against the simulator raised the real catch
+            rate from 70.4% to 85.5% (3 seeds per arm); removing the same share at random gave 68.1%. It is one
+            world model on one task, and the gate that works still needs the simulator.</p>
+          <div class="item-links"><a href="https://github.com/vijayabhaskar-ev/gated-imagination">Code &amp; results</a><a href="https://x.com/vijayabhaskarev/status/2122690162568372336">Thread</a></div>
+        </div>
+      </article>
       <article class="item">
         <div class="thumb">
           <svg viewBox="0 0 128 85" aria-hidden="true" focusable="false">
@@ -233,7 +248,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2026 Vijaya Bhaskar Eswaran · Updated October 2026</p>
+    <p>&copy; 2026 Vijaya Bhaskar Eswaran · Updated November 2026</p>
   </footer>
 
 </div>
